@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fffaf5">
+  <title>Gadgetku — Sistem Penjualan</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#dashboard" data-view="dashboard" aria-label="Gadgetku, beranda"><span class="brand-mark">g.</span><span>gadgetku<span class="brand-dot">.</span><small>GADGET STORE</small></span></a>
+      <div class="side-label">MENU UTAMA</div>
+      <nav class="navigation" aria-label="Navigasi utama">
+        <button class="nav-link active" data-view="dashboard"><span>◫</span>Ringkasan</button>
+        <button class="nav-link" data-view="sales"><span>↗</span>Penjualan</button>
+        <button class="nav-link" data-view="returns"><span>↩</span>Retur barang</button>
+        <button class="nav-link" data-view="inventory"><span>▦</span>Inventaris</button>
+        <button class="nav-link" data-view="suppliers"><span>♧</span>Supplier</button>
+        <button class="nav-link" data-view="products"><span>▣</span>Produk</button>
+      </nav>
+      <div class="sidebar-bottom"><span class="live-dot"></span><span id="connection-label">Mode demo lokal</span><small>v1.0 · TOKO GADGET</small></div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar"><div class="mobile-brand"><span class="brand-mark">g.</span> gadgetku.</div><div class="topbar-right"><span class="today" id="today-label"></span><span class="avatar">GK</span></div></header>
+      <section class="page-heading"><div><div class="eyebrow" id="eyebrow">TOKO GADGET · OPERASIONAL</div><h1 id="page-title">Ringkasan</h1><p id="page-subtitle">Pantau penjualan dan inventaris hari ini.</p></div><button class="button button-primary" id="new-sale"><span>＋</span> Transaksi baru</button></section>
+
+      <section id="dashboard-view" class="view active-view">
+        <div class="stats-grid">
+          <article class="stat-card"><div class="stat-top"><span>Penjualan hari ini</span><span class="stat-symbol green">↗</span></div><strong id="stat-sales">Rp0</strong><small id="stat-sales-count">0 transaksi tercatat</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Barang terjual</span><span class="stat-symbol blue">▦</span></div><strong id="stat-items">0</strong><small>unit keluar hari ini</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Retur diproses</span><span class="stat-symbol coral">↩</span></div><strong id="stat-returns">0</strong><small id="stat-refunds">Rp0 nilai pengembalian</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Stok menipis</span><span class="stat-symbol amber">!</span></div><strong id="stat-low">0</strong><small>produk dengan stok ≤ 5</small></article>
+        </div>
+        <div class="content-grid">
+          <section class="panel recent-panel"><div class="panel-heading"><div><h2>Transaksi terbaru</h2><p>Aktivitas penjualan terakhir</p></div><button class="text-button" data-go="sales">Lihat semua <span>→</span></button></div><div class="table-wrap"><table><thead><tr><th>PELANGGAN</th><th>TANGGAL</th><th>PEMBAYARAN</th><th class="align-right">TOTAL</th></tr></thead><tbody id="recent-sales"></tbody></table></div></section>
+          <section class="panel stock-panel"><div class="panel-heading"><div><h2>Perlu diperhatikan</h2><p>Stok produk paling rendah</p></div><span class="small-count" id="low-count">0 item</span></div><div id="low-stock-list" class="low-stock-list"></div><button class="stock-link" data-go="inventory">Buka inventaris <span>→</span></button></section>
+        </div>
+        <section class="panel returns-strip"><div class="panel-heading"><div><h2>Retur terbaru</h2><p>Pengembalian barang yang masuk</p></div><button class="text-button" data-go="returns">Riwayat retur <span>→</span></button></div><div id="recent-returns" class="return-list"></div></section>
+      </section>
+
+      <section id="sales-view" class="view"><section class="panel full-panel"><div class="panel-heading"><div><h2>Riwayat penjualan</h2><p>Daftar transaksi toko</p></div><span class="small-count" id="sales-count">0 transaksi</span></div><div class="table-wrap"><table><thead><tr><th>ID TRANSAKSI</th><th>PELANGGAN</th><th>TANGGAL</th><th>METODE</th><th class="align-right">TOTAL</th><th>AKSI</th></tr></thead><tbody id="sales-table"></tbody></table></div></section></section>
+
+      <section id="returns-view" class="view"><section class="panel full-panel"><div class="panel-heading"><div><h2>Riwayat retur</h2><p>Barang dan pengembalian dana</p></div><button class="button button-small button-primary" data-action="new-return"><span>＋</span> Proses retur</button></div><div class="table-wrap"><table><thead><tr><th>ID RETUR</th><th>TRANSAKSI</th><th>TANGGAL</th><th>ALASAN</th><th class="align-right">PENGEMBALIAN</th></tr></thead><tbody id="returns-table"></tbody></table></div></section></section>
+
+      <section id="inventory-view" class="view"><section class="panel full-panel"><div class="panel-heading"><div><h2>Inventaris produk</h2><p>Harga jual, pemasok, dan ketersediaan stok</p></div><span class="small-count" id="product-count">0 produk</span></div><div class="table-wrap"><table><thead><tr><th>PRODUK</th><th>KATEGORI</th><th>SKU</th><th>PEMASOK</th><th class="align-right">HARGA</th><th class="align-right">STOK</th></tr></thead><tbody id="products-table"></tbody></table></div></section></section>
+
+      <section id="suppliers-view" class="view">
+        <section class="panel full-panel">
+          <div class="panel-heading">
+            <div><h2>Manajemen Supplier</h2><p>Daftar pemasok dan kontak operasional</p></div>
+            <button class="button button-small button-primary" data-action="new-supplier"><span>＋</span> Tambah Supplier</button>
+          </div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>NAMA SUPPLIER</th><th>KONTAK PERSON</th><th>NO. TELEPON</th><th>ALAMAT</th><th>AKSI</th></tr></thead>
+            <tbody id="suppliers-table"></tbody>
+          </table></div>
+        </section>
+      </section>
+
+      <section id="products-view" class="view">
+        <section class="panel full-panel">
+          <div class="panel-heading">
+            <div><h2>Katalog Produk</h2><p>Kelola barang dan pantau ketersediaan stok</p></div>
+            <button class="button button-small button-primary" data-action="new-product"><span>＋</span> Tambah Produk</button>
+          </div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>GAMBAR</th><th>NAMA PRODUK</th><th>KATEGORI</th><th>HARGA</th><th>STOK</th><th>AKSI</th></tr></thead>
+            <tbody id="catalog-table"></tbody>
+          </table></div>
+        </section>
+      </section>
+
+      <footer class="footer"><span>Gadgetku <span>·</span> Sistem Penjualan & Retur</span><span id="data-mode">Data tersimpan di perangkat ini</span></footer>
+    </main>
+  </div>
+
+  <dialog id="sale-dialog" class="modal"><form id="sale-form" method="dialog"><div class="modal-heading"><div><div class="eyebrow" id="sale-dialog-eyebrow">TRANSAKSI BARU</div><h2>Catat penjualan</h2></div><button class="icon-button" type="button" data-close aria-label="Tutup">×</button></div><label>Nama pelanggan<input id="sale-customer" name="customer_name" type="text" required maxlength="120" autocomplete="name" placeholder="Tulis nama pelanggan"></label><label>No. telepon <span class="optional-label">Opsional</span><input id="sale-customer-phone" name="customer_phone" type="tel" maxlength="40" autocomplete="tel" placeholder="Nomor telepon jika tersedia"></label><div class="modal-section-label">Pilih barang</div><div id="sale-product-list" class="picker-list"></div><label>Metode pembayaran<select name="payment_method" id="sale-payment-method"><option>Tunai</option><option>Transfer</option><option>QRIS</option></select></label><label id="sale-amount-label">Jumlah uang diterima<input id="sale-amount-paid" name="amount_paid" type="number" min="0" step="1" value="0" required><small id="sale-payment-hint">Masukkan nominal tunai; kembalian dihitung otomatis.</small></label><div class="modal-total"><span>Total transaksi</span><strong id="sale-total">Rp0</strong></div><p class="form-error" id="sale-error"></p><button class="button button-primary modal-submit" type="submit">Simpan transaksi <span>→</span></button></form></dialog>
+
+  <dialog id="return-dialog" class="modal"><form id="return-form" method="dialog"><div class="modal-heading"><div><div class="eyebrow">PENGEMBALIAN BARANG</div><h2>Proses retur</h2></div><button class="icon-button" type="button" data-close aria-label="Tutup">×</button></div><label>Pilih transaksi<select name="sale_id" id="return-sale" required></select></label><div class="modal-section-label">Barang yang diretur</div><div id="return-item-list" class="picker-list empty-picker">Pilih transaksi untuk melihat barang.</div><label>Alasan retur<input name="reason" placeholder="Contoh: Produk tidak berfungsi" required maxlength="160"></label><div class="modal-total"><span>Estimasi pengembalian</span><strong id="return-total">Rp0</strong></div><p class="form-error" id="return-error"></p><button class="button button-primary modal-submit" type="submit">Simpan retur <span>→</span></button></form></dialog>
+
+  <dialog id="supplier-dialog" class="modal"><form id="supplier-form" method="dialog">
+    <div class="modal-heading"><div><div class="eyebrow">DATA PEMASOK</div><h2 id="supplier-dialog-title">Tambah Supplier</h2></div><button class="icon-button" type="button" data-close aria-label="Tutup">×</button></div>
+    <input type="hidden" name="id">
+    <label>Nama supplier<input name="name" required maxlength="120"></label>
+    <label>Kontak person<input name="contact_name" required maxlength="120"></label>
+    <label>No. telepon<input name="phone" required maxlength="40"></label>
+    <label>Alamat<input name="address" required maxlength="200"></label>
+    <p class="form-error" id="supplier-error"></p>
+    <button class="button button-primary modal-submit" type="submit">Simpan supplier <span>→</span></button>
+  </form></dialog>
+
+  <dialog id="product-dialog" class="modal"><form id="product-form" method="dialog">
+    <div class="modal-heading"><div><div class="eyebrow">KATALOG BARANG</div><h2 id="product-dialog-title">Tambah Produk</h2></div><button class="icon-button" type="button" data-close aria-label="Tutup">×</button></div>
+    <input type="hidden" name="id">
+    <label>SKU<input name="sku" required maxlength="40"></label>
+    <label>Nama produk<input name="name" required maxlength="140"></label>
+    <label>Kategori<input name="category" required maxlength="80"></label>
+    <label>Supplier<select name="supplier_id" id="product-supplier" required></select></label>
+    <label>Harga<input name="price" type="number" min="0" step="1" required></label>
+    <label>Stok<input name="stock" type="number" min="0" step="1" required></label>
+    <p class="form-error" id="product-error"></p>
+    <button class="button button-primary modal-submit" type="submit">Simpan produk <span>→</span></button>
+  </form></dialog>
+
+  <dialog id="sale-success-dialog" class="modal success-modal">
+    <div class="success-mark">✓</div>
+    <div class="success-copy"><div class="eyebrow">TRANSAKSI TERSIMPAN</div><h2 id="sale-success-title">Penjualan berhasil</h2><p id="sale-success-summary"></p></div>
+    <div class="success-actions"><button class="button button-primary" id="print-saved-sale" type="button">Cetak Struk</button><button class="button button-quiet" type="button" data-close>Tutup</button></div>
+  </dialog>
+
+  <dialog id="receipt-dialog" class="modal receipt-modal">
+    <div class="receipt-toolbar no-print"><label>Ukuran kertas<select id="receipt-width"><option value="58">Thermal 58 mm</option><option value="80">Thermal 80 mm</option></select></label><button class="button button-primary" id="print-receipt" type="button">Cetak Struk</button><button class="icon-button" type="button" data-close aria-label="Tutup">×</button></div>
+    <div id="receipt-preview"></div>
+  </dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
